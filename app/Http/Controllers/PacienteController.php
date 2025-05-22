@@ -106,21 +106,7 @@ class PacienteController extends Controller
             'grupo_sanguineo_id' => 'required'
         ]);
 
-        $datosActualizados = [
-            'email' => $request->input('email'),
-            'primer_nombre' => $request->input('primer_nombre'),
-            'segundo_nombre' => $request->input('segundo_nombre'),
-            'primer_apellido' => $request->input('primer_apellido'),
-            'segundo_apellido' => $request->input('segundo_apellido'),
-            'direccion' => $request->input('direccion'),
-            'id_ciudad' => $request->input('ciudad_id'),
-            'id_genero' => $request->input('genero_id'),
-            'id_grupo_sanguineo' => $request->input('grupo_sanguineo_id'),
-            'updated_at' => now(),
-        ];
-
-        // Ejecutar la actualización
-        DB::table('pacientes')->where('id', $id)->update($datosActualizados);
+        
 
         // Redirigir con mensaje de éxito
         return redirect()->route('pacientes.index')->with('success', 'Paciente actualizado correctamente.');
