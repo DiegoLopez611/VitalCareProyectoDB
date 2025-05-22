@@ -20,4 +20,6 @@ Route::middleware([
     Route::get('/reportes/pacientes', [ReporteController::class, 'reportePacientes'])->name('reportes.pacientes');
     Route::get('/reportes/medicamentos', [ReporteController::class, 'reporteMedicamentos'])->name('reportes.medicamentos');
     Route::get('/reportes/sedes', [ReporteController::class, 'reporteSedes'])->name('reportes.sedes');
+    Route::get('/reportes/medicos', [ReporteController::class, 'reporteMedicos'])->name('reportes.medicos');
+    Route::get('/reportes/pacientes_ciudad', [ReporteController::class, 'reportePacientesCiudad'])->name('reportes.pacientes_ciudad');
 });

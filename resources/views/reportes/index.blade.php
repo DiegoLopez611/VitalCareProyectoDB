@@ -31,10 +31,17 @@
                                 ],
                                 [
                                     'titulo' => 'Reporte de Sedes',
-                                    'nivel' => 'Básico',
-                                    'descripcion' => 'Generar un reporte de todos las sedes registrados en el sistema, incluyecdo información básica como nombre de la sede, telefono y direccion',
+                                    'nivel' => 'Intermedio',
+                                    'descripcion' => 'Generar un reporte de todos las sedes registradas en el sistema, incluyecdo información básica como nombre de la sede, telefono y direccion',
                                     'icono' => '🏥',
                                     'ruta' => 'reportes.sedes'
+                                ],
+                                [
+                                    'titulo' => 'Reporte de Medicos',
+                                    'nivel' => 'Avanzado',
+                                    'descripcion' => 'Generar un reporte de todos los medicos registrados en el sistema, incluyecdo información básica como nombre, cedula y especialidad',
+                                    'icono' => '🧑‍⚕️',
+                                    'ruta' => 'reportes.medicos'
                                 ],
                                 [
                                     'titulo' => 'Reporte de Pacientes',
@@ -44,18 +51,11 @@
                                     'ruta' => 'reportes.pacientes'
                                 ],
                                 [
-                                    'titulo' => 'Reporte de Inventario',
-                                    'nivel' => 'Básico',
-                                    'descripcion' => 'Estado actual del inventario, productos con bajo stock y movimientos de entrada y salida de mercancía.',
-                                    'icono' => '📦',
-                                    'ruta' => 'reportes'
-                                ],
-                                [
-                                    'titulo' => 'Reporte de Actividad',
+                                    'titulo' => 'Reporte de Pacientes por Ciudad',
                                     'nivel' => 'Intermedio',
-                                    'descripcion' => 'Seguimiento de la actividad de usuarios en el sistema, logs de acceso y acciones realizadas.',
-                                    'icono' => '📈',
-                                    'ruta' => 'reportes'
+                                    'descripcion' => 'Genera un reporte completo de todos los pacientes registrados en el sistema, incluyendo información básica y discriminados por ciudad.',
+                                    'icono' => '🏙️',
+                                    'ruta' => 'reportes.pacientes_ciudad'
                                 ],
                                 [
                                     'titulo' => 'Reporte de Clientes',
