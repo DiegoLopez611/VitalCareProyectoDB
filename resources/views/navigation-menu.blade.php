@@ -16,6 +16,26 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('pacientes.index') }}" :active="request()->routeIs('pacientes.index')">
+                        {{ __('Pacientes') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('medicos.index') }}" :active="request()->routeIs('medicos.index')">
+                        {{ __('Medicos') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('medicamentos.index') }}" :active="request()->routeIs('medicamentos.index')">
+                        {{ __('Medicamentos') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('sedes.index') }}" :active="request()->routeIs('sedess.index')">
+                        {{ __('Sedes') }}
+                    </x-nav-link>
+                </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('reportes') }}" :active="request()->routeIs('reportes')">
                         {{ __('Reportes') }}
