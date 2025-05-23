@@ -177,7 +177,7 @@
                         <th style="width: 8%">ID</th>
                         <th style="width: 12%">Nombre</th>
                         <th style="width: 20%">Nombre Laboratorio</th>
-                        <th style="width: 18%">Concentración</th>
+                        <th style="width: 18%">Concentración (Mg)</th>
                         <th style="width: 12%">Registro</th>
                     </tr>
                 </thead>
@@ -193,7 +193,7 @@
                                     <th style="width: 8%">ID</th>
                                     <th style="width: 12%">Nombre</th>
                                     <th style="width: 20%">Nombre Laboratorio</th>
-                                    <th style="width: 18%">Concentración</th>
+                                    <th style="width: 18%">Concentración (Mg)</th>
                                     <th style="width: 12%">Registro</th>
                                 </tr>
                             </thead>

@@ -22,7 +22,8 @@ class SedeController extends Controller
      */
     public function create()
     {
-        return view('sede.create');
+        $ciudades = DB::table('ciudades')->get();
+        return view('sede.create', compact('ciudades'));
     }
 
     /**
@@ -34,12 +35,14 @@ class SedeController extends Controller
             'nombre' => 'required|string',
             'direccion' => 'required|string',
             'telefono' => 'required|string',
+            'ciudad_id' =>'required'
         ]);
 
          DB::table('sedes')->insert([
             'nombre' => $request->input('nombre'),
             'direccion' => $request->input('direccion'),
             'telefono' => $request->input('telefono'),
+            'id_ciudad' => $request->input('ciudad_id'),
             'estado' => 'ACTIVO',
             'created_at' => now(),
             'updated_at' => now(),
@@ -63,7 +66,8 @@ class SedeController extends Controller
     public function edit(string $id)
     {
         $sede = DB::table('sedes')->where('id', $id)->first();
-        return view('sede.edit', compact('sede'));
+        $ciudades = DB::table('ciudades')->get();
+        return view('sede.edit', compact('sede','ciudades'));
     }
 
     /**
@@ -75,12 +79,14 @@ class SedeController extends Controller
             'nombre' => 'required|string',
             'direccion' => 'required|string',
             'telefono' => 'required|string',
+            'ciudad_id' => 'required',
         ]);
 
         $datosActualizados = [
             'nombre' => $request->input('nombre'),
             'direccion' => $request->input('direccion'),
             'telefono' => $request->input('telefono'),
+            'id_ciudad' => $request->input('ciudad_id'),
             'updated_at' => now(),
         ];
 
