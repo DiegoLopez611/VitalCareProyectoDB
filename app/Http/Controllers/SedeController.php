@@ -4,16 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Repositories\Interfaces\SedeRepositoryInterface;
+use App\Repositories\Interfaces\CiudadRepositoryInterface;
 
 class SedeController extends Controller
 {
+    protected $sedeRepository;
+    protected $ciudadRepository;
+
+    public function __construct(SedeRepositoryInterface $sedeRepository, CiudadRepositoryInterface $ciudadRepository)
+    {
+        $this->sedeRepository = $sedeRepository;
+        $this->ciudadRepository = $ciudadRepository;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $sedes = DB::table('sedes')->paginate(10);
+        $sedes = $this->sedeRepository->obtenerTodos();
         return view('sede.index', compact('sedes'));
     }
 
@@ -22,7 +31,7 @@ class SedeController extends Controller
      */
     public function create()
     {
-        $ciudades = DB::table('ciudades')->get();
+        $ciudades = $this->ciudadRepository->obtenerTodos();
         return view('sede.create', compact('ciudades'));
     }
 
@@ -38,7 +47,7 @@ class SedeController extends Controller
             'ciudad_id' =>'required'
         ]);
 
-         DB::table('sedes')->insert([
+        $this->sedeRepository->guardarSede([
             'nombre' => $request->input('nombre'),
             'direccion' => $request->input('direccion'),
             'telefono' => $request->input('telefono'),
@@ -65,8 +74,8 @@ class SedeController extends Controller
      */
     public function edit(string $id)
     {
-        $sede = DB::table('sedes')->where('id', $id)->first();
-        $ciudades = DB::table('ciudades')->get();
+        $sede = $this->sedeRepository->buscarSede($id);
+        $ciudades = $this->ciudadRepository->obtenerTodos();
         return view('sede.edit', compact('sede','ciudades'));
     }
 
@@ -90,8 +99,7 @@ class SedeController extends Controller
             'updated_at' => now(),
         ];
 
-        // Ejecutar la actualización
-        DB::table('sedes')->where('id', $id)->update($datosActualizados);
+        $this->sedeRepository->actualizarSede($datosActualizados, $id);
 
         // Redirigir con mensaje de éxito
         return redirect()->route('sedes.index')->with('success', 'Sede actualizada correctamente.');
@@ -102,7 +110,7 @@ class SedeController extends Controller
      */
     public function destroy(string $id)
     {
-        DB::table('sedes')->where('id', $id)->update(['estado' => 'INACTIVO']);
+        $this->sedeRepository->eliminarSede($id);
         return redirect()->route('sedes.index')->with('success', 'Sede eliminada correctamente.');
     }
 }
