@@ -9,7 +9,6 @@ use App\Repositories\Interfaces\PacienteRepositoryInterface;
 use App\Repositories\Interfaces\CiudadRepositoryInterface;
 use App\Repositories\Interfaces\GeneroRepositoryInterface;
 use App\Repositories\Interfaces\GrupoSanguineoRepositoryInterface;
-use Illuminate\Support\Facades\DB;
 
 class PacienteController extends Controller
 {

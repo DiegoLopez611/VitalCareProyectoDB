@@ -5,15 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\Interfaces\MedicamentoRepositoryInterface;
 
 class MedicamentoController extends Controller
 {
+
+    protected $medicamentoRepository;
+
+    public function __construct(MedicamentoRepositoryInterface $medicamentoRepository)
+    {
+        $this->medicamentoRepository = $medicamentoRepository;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $medicamentos = DB::table('medicamentos')->paginate(10);
+        $medicamentos = $this->medicamentoRepository->obtenerTodos();
         return view('medicamento.index', compact('medicamentos'));
     }
 
@@ -36,7 +44,7 @@ class MedicamentoController extends Controller
             'nombre_laboratorio' => 'required|string',
         ]);
 
-         DB::table('medicamentos')->insert([
+        $this->medicamentoRepository->guardarMedicamento([
             'nombre' => $request->input('nombre'),
             'concentracion' => $request->input('concentracion'),
             'nombre_laboratorio' => $request->input('nombre_laboratorio'),
@@ -62,7 +70,7 @@ class MedicamentoController extends Controller
      */
     public function edit(string $id)
     {
-        $medicamento = DB::table('medicamentos')->where('id', $id)->first();
+        $medicamento = $this->medicamentoRepository->buscarMedicamento($id);
         return view('medicamento.edit', compact('medicamento'));
     }
 
@@ -84,8 +92,7 @@ class MedicamentoController extends Controller
             'updated_at' => now(),
         ];
 
-        // Ejecutar la actualización
-        DB::table('medicamentos')->where('id', $id)->update($datosActualizados);
+        $this->medicamentoRepository->actualizarMedicamento($datosActualizados, $id);
 
         // Redirigir con mensaje de éxito
         return redirect()->route('medicamentos.index')->with('success', 'Medicamento actualizado correctamente.');
@@ -96,7 +103,7 @@ class MedicamentoController extends Controller
      */
     public function destroy(string $id)
     {
-        DB::table('medicamentos')->where('id', $id)->update(['estado' => 'INACTIVO']);
+        $this->medicamentoRepository->eliminarMedicamento($id);
         return redirect()->route('medicamentos.index')->with('success', 'Medicamento eliminado correctamente.');
     }
 }
