@@ -5,27 +5,26 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\Interfaces\MedicoRepositoryInterface;
+use App\Repositories\Interfaces\UsuarioRepositoryInterface;
 
 class MedicoController extends Controller
 {
+
+    protected $medicoRepository;
+    protected $usuarioRepository;
+
+    public function __construct(MedicoRepositoryInterface $medicoRepository, UsuarioRepositoryInterface $usuarioRepository)
+    {
+        $this->medicoRepository = $medicoRepository;
+        $this->usuarioRepository = $usuarioRepository;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $medicos = DB::table('medicos as m')
-            ->join('usuarios as u','m.cedula','=','u.cedula')
-            ->select([
-                'm.id',
-                'm.cedula',
-                'u.nombre',
-                'u.apellido',
-                'u.fecha_nacimiento',
-                'u.email',
-                'm.numero_licencia_medica as licencia_medica',
-                'm.estado'
-            ])
-            ->paginate(10);
+        $medicos = $this->medicoRepository->obtenerInformacionCompletaTodos();
         return view('medico.index', compact('medicos'));
     }
 
@@ -46,7 +45,6 @@ class MedicoController extends Controller
             'cedula'=>'required|string',
             'email'=>'required|email',
             'primer_nombre'=>'required|string',
-            'segundo_nombre'=>'string',
             'primer_apellido'=>'required|string',
             'segundo_apellido'=>'string',
             'direccion'=>'required|string',
@@ -55,7 +53,7 @@ class MedicoController extends Controller
             'fecha_inicio' =>'required'
         ]);
 
-        DB::table('usuarios')->insert([
+        $this->usuarioRepository->guardarUsuario([
             'cedula' => $request->input('cedula'),
             'email' => $request->input('email'),
             'nombre' => $request->input('primer_nombre').' '.$request->input('segundo_nombre'),
@@ -66,7 +64,7 @@ class MedicoController extends Controller
             'id_estado_usuario' => 1
         ]);
 
-        DB::table('medicos')->insert([
+        $this->medicoRepository->guardarMedico([
             'cedula' => $request->input('cedula'),
             'fecha_inicio_laboral' => $request->input('fecha_inicio'),
             'numero_licencia_medica' => $request->input('licencia_medica'),
@@ -93,8 +91,8 @@ class MedicoController extends Controller
      */
     public function edit(string $id)
     {
-        $medico = DB::table('medicos')->where('id', $id)->first();
-        $usuario = DB::table('usuarios')->where('id', $id)->first();
+        $medico = $this->medicoRepository->buscarMedico($id);
+        $usuario = $this->usuarioRepository->buscarUsuario($id);
         return view('medico.edit', compact('medico','usuario'));
     }
 
@@ -115,26 +113,23 @@ class MedicoController extends Controller
             'fecha_nacimiento' => 'required',
         ]);
 
-        DB::table('usuarios')
-            ->where('cedula', $request->input('cedula'))
-            ->update([
+        $this->usuarioRepository->actualizarUsuario(
+            [
                 'email' => $request->input('email'),
                 'nombre' => $request->input('primer_nombre'),
                 'apellido' => $request->input('primer_apellido'),
                 'direccion' => $request->input('direccion'),
                 'fecha_nacimiento' => $request->input('fecha_nacimiento'),
                 'updated_at' => now(),
-            ]);
+            ], $request->input('cedula')
+        );
 
-        DB::table('medicos')
-            ->where('cedula', $request->input('cedula'))
-            ->update([
-                'cedula' => $request->input('cedula'),
+        $this->medicoRepository->actualizarMedico(
+            [
                 'numero_licencia_medica' => $request->input('licencia_medica'),
                 'updated_at' => now(),
-            ]);
-
-        
+            ], $request->input('cedula')
+        );
 
         // Redirigir con mensaje de éxito
         return redirect()->route('medicos.index')->with('success', 'Medico actualizado correctamente.');
@@ -145,7 +140,7 @@ class MedicoController extends Controller
      */
     public function destroy(string $id)
     {
-        DB::table('medicos')->where('id', $id)->update(['estado' => 'INACTIVO']);
+        $this->medicoRepository->eliminarMedico($id);
         return redirect()->route('medicos.index')->with('success', 'Medico eliminado correctamente.');
     
     }
