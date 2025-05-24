@@ -5,16 +5,38 @@ namespace App\Http\Controllers;
 use App\Models\Paciente;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Repositories\Interfaces\PacienteRepositoryInterface;
+use App\Repositories\Interfaces\CiudadRepositoryInterface;
+use App\Repositories\Interfaces\GeneroRepositoryInterface;
+use App\Repositories\Interfaces\GrupoSanguineoRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
 class PacienteController extends Controller
 {
+
+    protected $pacienteRepository;
+    protected $ciudadRepository;
+    protected $generoRepository;
+    protected $grupoSanguineoRepository;
+
+    public function __construct(PacienteRepositoryInterface $pacienteRepository, 
+                            CiudadRepositoryInterface $ciudadRepository,
+                            GeneroRepositoryInterface $generoRepository,
+                            GrupoSanguineoRepositoryInterface $grupoSanguineoRepository,
+                            )
+    {
+        $this->pacienteRepository = $pacienteRepository;
+        $this->ciudadRepository = $ciudadRepository;
+        $this->generoRepository = $generoRepository;
+        $this->grupoSanguineoRepository = $grupoSanguineoRepository;
+    }
+    
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $pacientes = DB::table('pacientes')->paginate(10);
+        $pacientes = $this->pacienteRepository->obtenerTodos();
         return view('paciente.index', compact('pacientes'));
     }
 
@@ -23,9 +45,9 @@ class PacienteController extends Controller
      */
     public function create()
     {
-        $ciudades = DB::table('ciudades')->get();
-        $generos = DB::table('generos')->get();
-        $grupos_sanguineos = DB::table('grupos_sanguineos')->get();
+        $ciudades = $this->ciudadRepository->obtenerTodos();
+        $generos = $this->generoRepository->obtenerTodos();
+        $grupos_sanguineos = $this->grupoSanguineoRepository->obtenerTodos();
         return view('paciente.create', compact('ciudades', 'generos', 'grupos_sanguineos'));
     }
 
@@ -47,7 +69,7 @@ class PacienteController extends Controller
             'grupo_sanguineo_id' => 'required'
         ]);
 
-        DB::table('pacientes')->insert([
+        $this->pacienteRepository->guardarPaciente([
             'cedula' => $request->input('cedula'),
             'fecha_nacimiento' => $request->input('fecha_nacimiento'),
             'email' => $request->input('email'),
@@ -81,10 +103,10 @@ class PacienteController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $paciente = DB::table('pacientes')->where('id', $id)->first();
-        $ciudades = DB::table('ciudades')->get();
-        $generos = DB::table('generos')->get();
-        $grupos_sanguineos = DB::table('grupos_sanguineos')->get();
+        $paciente = $this->pacienteRepository->buscarPaciente($id);
+        $ciudades = $this->ciudadRepository->obtenerTodos();
+        $generos = $this->generoRepository->obtenerTodos();
+        $grupos_sanguineos = $this->grupoSanguineoRepository->obtenerTodos();
         return view('paciente.edit', compact('paciente','ciudades','generos','grupos_sanguineos'));
     }
 
@@ -106,7 +128,18 @@ class PacienteController extends Controller
             'grupo_sanguineo_id' => 'required'
         ]);
 
-        
+        $this->pacienteRepository->actualizarPaciente([
+            'email' => $request->input('email'),
+            'primer_nombre' => $request->input('primer_nombre'),
+            'segundo_nombre' => $request->input('segundo_nombre'),
+            'primer_apellido' => $request->input('primer_apellido'),
+            'segundo_apellido' => $request->input('segundo_apellido'),
+            'direccion' => $request->input('direccion'),
+            'id_ciudad' => $request->input('ciudad_id'),
+            'id_genero' => $request->input('genero_id'),
+            'id_grupo_sanguineo' => $request->input('grupo_sanguineo_id'),
+            'created_at' => now(),
+        ], $id);
 
         // Redirigir con mensaje de éxito
         return redirect()->route('pacientes.index')->with('success', 'Paciente actualizado correctamente.');
@@ -117,7 +150,7 @@ class PacienteController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        DB::table('pacientes')->where('id', $id)->update(['estado' => 'INACTIVO']);
+        $this->pacienteRepository->eliminarPaciente($id);
         return redirect()->route('pacientes.index')->with('success', 'Paciente eliminado correctamente.');
     }
 }
