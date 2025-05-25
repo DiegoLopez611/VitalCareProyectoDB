@@ -25,7 +25,7 @@ class ReporteRepository implements ReporteRepositoryInterface
                     'p.updated_at',
                     'g.nombre as genero' // Nombre del género
                 ])
-                ->orderBy('p.created_at', 'desc')
+                ->orderBy('p.created_at', 'asc')
                 ->get();
     }
 
@@ -39,7 +39,7 @@ class ReporteRepository implements ReporteRepositoryInterface
                     'id',
                     'created_at'
                 ])
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'asc')
                 ->get();
     }
 
@@ -55,7 +55,7 @@ class ReporteRepository implements ReporteRepositoryInterface
                     's.created_at',
                     'c.nombre as ciudad'
                 ])
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'asc')
                 ->get();
     }
 
@@ -72,7 +72,7 @@ class ReporteRepository implements ReporteRepositoryInterface
                     'e.nombre as especialidad',
                     'm.created_at'
                 ])
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'asc')
                 ->get();
     }
 
@@ -90,7 +90,7 @@ class ReporteRepository implements ReporteRepositoryInterface
                     'p.created_at'
                 ])
                 ->orderBy('c.nombre', 'asc')
-                ->orderBy('p.created_at', 'desc')
+                ->orderBy('p.created_at', 'asc')
                 ->get();
     }
 
@@ -127,7 +127,21 @@ class ReporteRepository implements ReporteRepositoryInterface
                     'id',
                     'created_at'
                 ])
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'asc')
                 ->get();
+    }
+
+    public function obtenerTratamientos()
+    {
+        return DB::table('tratamientos as t')
+            ->join('tipos_tratamientos as tt', 't.id_tipo_tratamiento', '=', 'tt.id')
+            ->select([
+                't.id',
+                't.nombre',
+                't.created_at',
+                'tt.nombre as tipo_tratamiento'
+            ])
+            ->orderBy('t.created_at', 'asc')
+            ->get();
     }
 }

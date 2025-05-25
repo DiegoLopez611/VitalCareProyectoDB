@@ -11,4 +11,5 @@ interface ReporteRepositoryInterface
     public function medicosPorEspecialidad();
     public function pacientesPorGrupoSanguineoCiudad();
     public function obtenerDiagnosticos();
+    public function obtenerTratamientos();
 }

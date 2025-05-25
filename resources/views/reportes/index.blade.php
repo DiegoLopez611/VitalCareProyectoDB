@@ -38,10 +38,10 @@
                                 ],
                                 [
                                     'titulo' => 'Reporte de Tratamientos',
-                                    'nivel' => 'Básico',
-                                    'descripcion' => 'Reporte completo de facturación con detalles fiscales, impuestos y cumplimiento normativo.',
-                                    'icono' => '🧾',
-                                    'ruta' => 'reportes'
+                                    'nivel' => 'Intermedio',
+                                    'descripcion' => 'Generar un reporte de todos los Tratamientos registrados en el sistema, incluyendo información básica como nombre del tratamiento, tipo del tratamiento y descripción.',
+                                    'icono' => '📋',
+                                    'ruta' => 'reportes.tratamientos'
                                 ],
                                 [
                                     'titulo' => 'Reporte de Sedes',

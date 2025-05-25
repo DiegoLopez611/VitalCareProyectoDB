@@ -469,6 +469,56 @@ class ReporteController extends Controller
         }
     }
 
+    public function reporteTratamientos()
+    {
+        try {
+
+            $tratamientos = $this->reporteRepository->obtenerTratamientos();
+
+            $totalTratamientos = $tratamientos->count();
+            $tratamientosHoy = $tratamientos->where('created_at', '>=', Carbon::today())->count();
+            $tratamientosEsteMes = $tratamientos->where('created_at', '>=', Carbon::now()->startOfMonth())->count();
+            
+            // Preparar datos para la vista
+            $data = [
+                'tratamientos' => $tratamientos,
+                'totalTratamientos' => $totalTratamientos,
+                'tratamientosHoy' => $tratamientosHoy,
+                'tratamientosEsteMes' => $tratamientosEsteMes,
+                'fechaGeneracion' => Carbon::now()->format('d/m/Y H:i:s'),
+                'titulo' => 'Reporte de Tratamientos Registrados'
+            ];
+
+            // Generar PDF
+            $pdf = Pdf::loadView('reportes.tratamientos_pdf', $data);
+            
+            // Configurar el PDF
+            $pdf->setPaper('A4', 'portrait');
+            $pdf->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true
+            ]);
+
+            // Generar nombre del archivo
+            $nombreArchivo = 'reporte_tratamientos_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
+            return $pdf->download($nombreArchivo);
+
+        } catch (\Exception $e) {
+
+            \Log::error('Error al generar reporte de diagnosticos', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // En caso de error, redirigir con mensaje
+            return redirect()->route('reportes')
+                ->with('error', 'Error al generar el reporte: ' . $e->getMessage());
+        }
+    }
+
     private function generateCityChartUrl($labels, $data)
     {
         $chartConfig = [
