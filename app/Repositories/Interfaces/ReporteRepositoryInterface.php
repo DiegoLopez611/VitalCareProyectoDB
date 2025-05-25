@@ -10,4 +10,5 @@ interface ReporteRepositoryInterface
     public function sedesPorCiudad();
     public function medicosPorEspecialidad();
     public function pacientesPorGrupoSanguineoCiudad();
+    public function obtenerDiagnosticos();
 }

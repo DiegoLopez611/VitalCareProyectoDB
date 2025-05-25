@@ -30,18 +30,25 @@
                                     'ruta' => 'reportes.medicamentos'
                                 ],
                                 [
+                                    'titulo' => 'Reporte de Diagnosticos',
+                                    'nivel' => 'Básico',
+                                    'descripcion' => 'Generar un reporte de todos los diagnosticos registrados en el sistema, incluyendo información básica como nombre del diagnostico y descripción.',
+                                    'icono' => '🩺',
+                                    'ruta' => 'reportes.diagnosticos'
+                                ],
+                                [
+                                    'titulo' => 'Reporte de Tratamientos',
+                                    'nivel' => 'Básico',
+                                    'descripcion' => 'Reporte completo de facturación con detalles fiscales, impuestos y cumplimiento normativo.',
+                                    'icono' => '🧾',
+                                    'ruta' => 'reportes'
+                                ],
+                                [
                                     'titulo' => 'Reporte de Sedes',
                                     'nivel' => 'Intermedio',
                                     'descripcion' => 'Generar un reporte de todos las sedes registradas en el sistema, incluyecdo información básica como nombre de la sede, telefono, dirección y ciudad',
                                     'icono' => '🏥',
                                     'ruta' => 'reportes.sedes'
-                                ],
-                                [
-                                    'titulo' => 'Reporte de Medicos',
-                                    'nivel' => 'Avanzado',
-                                    'descripcion' => 'Generar un reporte de todos los medicos registrados en el sistema, incluyecdo información básica como nombre, cedula y especialidad',
-                                    'icono' => '🧑‍⚕️',
-                                    'ruta' => 'reportes.medicos'
                                 ],
                                 [
                                     'titulo' => 'Reporte de Pacientes',
@@ -61,22 +68,15 @@
                                     'titulo' => 'Reporte de Pacientes y Grupo Sanguineo por Ciudad',
                                     'nivel' => 'Avanazado',
                                     'descripcion' => 'Generar un reporte completo de la cantidad de pacientes por grupo sanguineo en cada una de las ciudades registradas en el sistema.',
-                                    'icono' => '👤',
+                                    'icono' => '🩸',
                                     'ruta' => 'reportes.pacientes_grupo_sanguineo'
                                 ],
                                 [
-                                    'titulo' => 'Reporte de Productos',
-                                    'nivel' => 'Intermedio',
-                                    'descripcion' => 'Análisis de rendimiento de productos, productos más vendidos y menos populares del catálogo.',
-                                    'icono' => '🛍️',
-                                    'ruta' => 'reportes'
-                                ],
-                                [
-                                    'titulo' => 'Reporte de Facturación',
+                                    'titulo' => 'Reporte de Medicos',
                                     'nivel' => 'Avanzado',
-                                    'descripcion' => 'Reporte completo de facturación con detalles fiscales, impuestos y cumplimiento normativo.',
-                                    'icono' => '🧾',
-                                    'ruta' => 'reportes'
+                                    'descripcion' => 'Generar un reporte de todos los medicos registrados en el sistema, incluyecdo información básica como nombre, cedula y especialidad',
+                                    'icono' => '🧑‍⚕️',
+                                    'ruta' => 'reportes.medicos'
                                 ],
                                 [
                                     'titulo' => 'Reporte de Marketing',

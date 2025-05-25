@@ -118,5 +118,16 @@ class ReporteRepository implements ReporteRepositoryInterface
             ->get();
     }
 
-    
+    public function obtenerDiagnosticos()
+    {
+        return DB::table('diagnosticos')
+                ->select([
+                    'nombre',
+                    'descripcion',
+                    'id',
+                    'created_at'
+                ])
+                ->orderBy('created_at', 'desc')
+                ->get();
+    }
 }

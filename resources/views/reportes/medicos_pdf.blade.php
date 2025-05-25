@@ -147,7 +147,7 @@
     <div class="header">
         <h1>{{ $titulo }}</h1>
         <p>Fecha de generación: {{ $fechaGeneracion }}</p>
-        <p>Sistema de Gestión de Medicos</p>
+        <p>Sistema de Gestión Médica</p>
     </div>
 
     <!-- Estadísticas Generales -->
@@ -222,7 +222,7 @@
             <strong>Reporte generado automáticamente</strong><br>
             Total de registros: {{ $totalMedicos }} | 
             Fecha: {{ $fechaGeneracion }} | 
-            Sistema de Gestión de Medicamentos
+            Sistema de Gestión Médica
         </p>
     </div>
 </body>

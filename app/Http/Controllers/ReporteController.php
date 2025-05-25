@@ -339,12 +339,8 @@ class ReporteController extends Controller
     public function reportePacientesGrupoSanguineo()
     {
         try {
-            \Log::info('Iniciando generación de reporte de pacientes por tipo de sangre y ciudad');
-            
             // Consultar pacientes con sus relaciones
             $pacientes = $this->reporteRepository->pacientesPorGrupoSanguineoCiudad();
-            
-            \Log::info('Pacientes obtenidos: ' . $pacientes->count());
             
             // Transformar datos para agregar nombre completo
             $pacientes = $pacientes->map(function ($paciente) {
@@ -383,16 +379,6 @@ class ReporteController extends Controller
             // Obtener tipos de sangre únicos para el resumen
             $tiposSangre = $pacientes->pluck('tipo_sangre')->unique()->sort()->values();
             
-            // Debug: Log de estadísticas
-            \Log::info('Estadísticas calculadas', [
-                'total' => $totalPacientes,
-                'hoy' => $pacientesHoy,
-                'mes' => $pacientesEsteMes,
-                'ciudades' => $ciudades->count(),
-                'tipos_sangre' => $tiposSangre->count()
-            ]);
-            
-            // Preparar datos para la vista
             $data = [
                 'pacientes' => $pacientes,
                 'totalPacientes' => $totalPacientes,
@@ -406,11 +392,8 @@ class ReporteController extends Controller
                 'fechaGeneracion' => Carbon::now()->format('d/m/Y H:i:s'),
                 'titulo' => 'Reporte de Pacientes por Tipo de Sangre y Ciudad'
             ];
-            
-            // Generar PDF
+
             $pdf = Pdf::loadView('reportes.pacientes_grupo_sanguineo_ciudad_pdf', $data);
-            
-            // Configurar el PDF
             $pdf->setPaper('A4', 'landscape'); // Cambiar a horizontal por más columnas
             $pdf->setOptions([
                 'defaultFont' => 'sans-serif',
@@ -420,9 +403,6 @@ class ReporteController extends Controller
             
             // Generar nombre del archivo
             $nombreArchivo = 'reporte_pacientes_sangre_ciudad_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
-            \Log::info('PDF generado exitosamente: ' . $nombreArchivo);
-            
-            // Descargar el PDF
             return $pdf->download($nombreArchivo);
             
         } catch (\Exception $e) {
@@ -433,6 +413,56 @@ class ReporteController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
             
+            // En caso de error, redirigir con mensaje
+            return redirect()->route('reportes')
+                ->with('error', 'Error al generar el reporte: ' . $e->getMessage());
+        }
+    }
+
+    public function reporteDiagnosticos()
+    {
+        try {
+
+            $diagnosticos = $this->reporteRepository->obtenerDiagnosticos();
+
+            $totalDiagnosticos = $diagnosticos->count();
+            $diagnosticosHoy = $diagnosticos->where('created_at', '>=', Carbon::today())->count();
+            $diagnosticosEsteMes = $diagnosticos->where('created_at', '>=', Carbon::now()->startOfMonth())->count();
+            
+            // Preparar datos para la vista
+            $data = [
+                'diagnosticos' => $diagnosticos,
+                'totalDiagnosticos' => $totalDiagnosticos,
+                'diagnosticosHoy' => $diagnosticosHoy,
+                'diagnosticosEsteMes' => $diagnosticosEsteMes,
+                'fechaGeneracion' => Carbon::now()->format('d/m/Y H:i:s'),
+                'titulo' => 'Reporte de Diagnosticos Registrados'
+            ];
+
+            // Generar PDF
+            $pdf = Pdf::loadView('reportes.diagnosticos_pdf', $data);
+            
+            // Configurar el PDF
+            $pdf->setPaper('A4', 'portrait');
+            $pdf->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true
+            ]);
+
+            // Generar nombre del archivo
+            $nombreArchivo = 'reporte_diagnosticos_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
+            return $pdf->download($nombreArchivo);
+
+        } catch (\Exception $e) {
+
+            \Log::error('Error al generar reporte de diagnosticos', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             // En caso de error, redirigir con mensaje
             return redirect()->route('reportes')
                 ->with('error', 'Error al generar el reporte: ' . $e->getMessage());

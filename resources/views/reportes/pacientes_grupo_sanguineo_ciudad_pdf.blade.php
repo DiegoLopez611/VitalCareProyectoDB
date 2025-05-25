@@ -246,7 +246,7 @@
     <div class="header">
         <h1>{{ $titulo }}</h1>
         <p>Fecha de generación: {{ $fechaGeneracion }}</p>
-        <p>Sistema de Gestión de Pacientes</p>
+        <p>Sistema de Gestión Médica</p>
     </div>
 
     <!-- Estadísticas Generales -->
@@ -407,7 +407,7 @@
             Ciudades: {{ $ciudades->count() }} | 
             Tipos de sangre: {{ $tiposSangre->count() }} | 
             Fecha: {{ $fechaGeneracion }} | 
-            Sistema de Gestión de Pacientes
+            Sistema de Gestión de Médica
         </p>
     </div>
 </body>

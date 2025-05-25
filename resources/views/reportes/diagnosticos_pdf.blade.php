@@ -153,36 +153,35 @@
     <!-- Estadísticas Generales -->
     <div class="stats-container">
         <div class="stat-box">
-            <span class="stat-number">{{ $totalMedicamentos }}</span>
-            <div class="stat-label">Total Medicamentos Registrados</div>
+            <span class="stat-number">{{ $totalDiagnosticos }}</span>
+            <div class="stat-label">Total Diagnosticos Registrados</div>
         </div>
         <div class="stat-box">
-            <span class="stat-number">{{ $medicamentosHoy }}</span>
+            <span class="stat-number">{{ $diagnosticosHoy }}</span>
             <div class="stat-label">Registrados Hoy</div>
         </div>
         <div class="stat-box">
-            <span class="stat-number">{{ $medicamentosEsteMes }}</span>
+            <span class="stat-number">{{ $diagnosticosEsteMes }}</span>
             <div class="stat-label">Este Mes</div>
         </div>
     </div>
 
     <!-- Tabla de Medicamentos -->
     <div class="table-container">
-        <h3 style="color: #4F46E5; margin-bottom: 15px;">Listado Completo de Medicamentos</h3>
+        <h3 style="color: #4F46E5; margin-bottom: 15px;">Listado Completo de Diagnosticos</h3>
         
-        @if(count($medicamentos) > 0)
+        @if(count($diagnosticos) > 0)
             <table>
                 <thead>
                     <tr>
                         <th style="width: 8%">ID</th>
                         <th style="width: 12%">Nombre</th>
-                        <th style="width: 20%">Nombre Laboratorio</th>
-                        <th style="width: 18%">Concentración (Mg)</th>
+                        <th style="width: 20%">Descripción</th>
                         <th style="width: 12%">Registro</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($medicamentos as $index => $medicamento)
+                    @foreach($diagnosticos as $index => $diagnostico)
                         @if($index > 0 && $index % 25 == 0)
                             </tbody>
                         </table>
@@ -192,26 +191,24 @@
                                 <tr>
                                     <th style="width: 8%">ID</th>
                                     <th style="width: 12%">Nombre</th>
-                                    <th style="width: 20%">Nombre Laboratorio</th>
-                                    <th style="width: 18%">Concentración (Mg)</th>
+                                    <th style="width: 20%">Descripción</th>
                                     <th style="width: 12%">Registro</th>
                                 </tr>
                             </thead>
                             <tbody>
                         @endif
                         <tr>
-                            <td>{{ $medicamento->id }}</td>
-                            <td>{{ $medicamento->nombre  }}</td>
-                            <td>{{ $medicamento->nombre_laboratorio }}</td>
-                            <td>{{ $medicamento->concentracion }}</td>
-                            <td>{{ \Carbon\Carbon::parse($medicamento->created_at)->format('d/m/Y') }}</td>
+                            <td>{{ $diagnostico->id }}</td>
+                            <td>{{ $diagnostico->nombre  }}</td>
+                            <td>{{ $diagnostico->descripcion }}</td>
+                            <td>{{ \Carbon\Carbon::parse($diagnostico->created_at)->format('d/m/Y') }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         @else
             <div class="no-data">
-                <p>No se encontraron medicamentos registrados en el sistema.</p>
+                <p>No se encontraron diagnostico registrados en el sistema.</p>
             </div>
         @endif
     </div>
@@ -220,7 +217,7 @@
     <div class="footer">
         <p>
             <strong>Reporte generado automáticamente</strong><br>
-            Total de registros: {{ $totalMedicamentos }} | 
+            Total de registros: {{ $totalDiagnosticos }} | 
             Fecha: {{ $fechaGeneracion }} | 
             Sistema de Gestión Médica
         </p>
