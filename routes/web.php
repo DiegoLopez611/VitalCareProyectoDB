@@ -31,4 +31,5 @@ Route::middleware([
     Route::get('/reportes/sedes', [ReporteController::class, 'reporteSedes'])->name('reportes.sedes');
     Route::get('/reportes/medicos', [ReporteController::class, 'reporteMedicos'])->name('reportes.medicos');
     Route::get('/reportes/pacientes_ciudad', [ReporteController::class, 'reportePacientesCiudad'])->name('reportes.pacientes_ciudad');
+    Route::get('/reportes/pacientes_grupo_sanguineo', [ReporteController::class, 'reportePacientesGrupoSanguineo'])->name('reportes.pacientes_grupo_sanguineo');
 });

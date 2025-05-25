@@ -58,11 +58,11 @@
                                     'ruta' => 'reportes.pacientes_ciudad'
                                 ],
                                 [
-                                    'titulo' => 'Reporte de Clientes',
-                                    'nivel' => 'Básico',
-                                    'descripcion' => 'Información detallada de la base de clientes, segmentación y análisis de comportamiento de compra.',
+                                    'titulo' => 'Reporte de Pacientes y Grupo Sanguineo por Ciudad',
+                                    'nivel' => 'Avanazado',
+                                    'descripcion' => 'Generar un reporte completo de la cantidad de pacientes por grupo sanguineo en cada una de las ciudades registradas en el sistema.',
                                     'icono' => '👤',
-                                    'ruta' => 'reportes'
+                                    'ruta' => 'reportes.pacientes_grupo_sanguineo'
                                 ],
                                 [
                                     'titulo' => 'Reporte de Productos',

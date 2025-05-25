@@ -306,7 +306,7 @@ class ReporteController extends Controller
             ];
 
             // Generar PDF
-            $pdf = Pdf::loadView('reportes.pacientes_ciudad-pdf', $data);
+            $pdf = Pdf::loadView('reportes.pacientes_ciudad_pdf', $data);
             
             // Configurar el PDF
             $pdf->setPaper('A4', 'portrait');
@@ -331,6 +331,109 @@ class ReporteController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
+            return redirect()->route('reportes')
+                ->with('error', 'Error al generar el reporte: ' . $e->getMessage());
+        }
+    }
+    
+    public function reportePacientesGrupoSanguineo()
+    {
+        try {
+            \Log::info('Iniciando generación de reporte de pacientes por tipo de sangre y ciudad');
+            
+            // Consultar pacientes con sus relaciones
+            $pacientes = $this->reporteRepository->pacientesPorGrupoSanguineoCiudad();
+            
+            \Log::info('Pacientes obtenidos: ' . $pacientes->count());
+            
+            // Transformar datos para agregar nombre completo
+            $pacientes = $pacientes->map(function ($paciente) {
+                $paciente->name = trim($paciente->primer_nombre . ' ' .
+                                    ($paciente->segundo_nombre ?? '') . ' ' .
+                                    $paciente->primer_apellido . ' ' .
+                                    ($paciente->segundo_apellido ?? ''));
+                return $paciente;
+            });
+            
+            // Calcular estadísticas básicas
+            $totalPacientes = $pacientes->count();
+            $pacientesHoy = $pacientes->where('created_at', '>=', Carbon::today())->count();
+            $pacientesEsteMes = $pacientes->where('created_at', '>=', Carbon::now()->startOfMonth())->count();
+            
+            // Agrupar por ciudad y tipo de sangre
+            $estadisticasCiudadTipoSangre = $pacientes->groupBy('ciudad')->map(function ($pacientesPorCiudad, $ciudad) {
+                return $pacientesPorCiudad->groupBy('tipo_sangre')->map(function ($group) {
+                    return $group->count();
+                });
+            });
+            
+            // Estadísticas por ciudad (totales)
+            $estadisticasPorCiudad = $pacientes->groupBy('ciudad')->map(function ($group) {
+                return $group->count();
+            });
+            
+            // Estadísticas por tipo de sangre (totales)
+            $estadisticasPorTipoSangre = $pacientes->groupBy('tipo_sangre')->map(function ($group) {
+                return $group->count();
+            });
+            
+            // Obtener ciudades únicas para el resumen
+            $ciudades = $pacientes->pluck('ciudad')->unique()->sort()->values();
+            
+            // Obtener tipos de sangre únicos para el resumen
+            $tiposSangre = $pacientes->pluck('tipo_sangre')->unique()->sort()->values();
+            
+            // Debug: Log de estadísticas
+            \Log::info('Estadísticas calculadas', [
+                'total' => $totalPacientes,
+                'hoy' => $pacientesHoy,
+                'mes' => $pacientesEsteMes,
+                'ciudades' => $ciudades->count(),
+                'tipos_sangre' => $tiposSangre->count()
+            ]);
+            
+            // Preparar datos para la vista
+            $data = [
+                'pacientes' => $pacientes,
+                'totalPacientes' => $totalPacientes,
+                'pacientesHoy' => $pacientesHoy,
+                'pacientesEsteMes' => $pacientesEsteMes,
+                'estadisticasCiudadTipoSangre' => $estadisticasCiudadTipoSangre,
+                'estadisticasPorCiudad' => $estadisticasPorCiudad,
+                'estadisticasPorTipoSangre' => $estadisticasPorTipoSangre,
+                'ciudades' => $ciudades,
+                'tiposSangre' => $tiposSangre,
+                'fechaGeneracion' => Carbon::now()->format('d/m/Y H:i:s'),
+                'titulo' => 'Reporte de Pacientes por Tipo de Sangre y Ciudad'
+            ];
+            
+            // Generar PDF
+            $pdf = Pdf::loadView('reportes.pacientes_grupo_sanguineo_ciudad_pdf', $data);
+            
+            // Configurar el PDF
+            $pdf->setPaper('A4', 'landscape'); // Cambiar a horizontal por más columnas
+            $pdf->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true
+            ]);
+            
+            // Generar nombre del archivo
+            $nombreArchivo = 'reporte_pacientes_sangre_ciudad_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
+            \Log::info('PDF generado exitosamente: ' . $nombreArchivo);
+            
+            // Descargar el PDF
+            return $pdf->download($nombreArchivo);
+            
+        } catch (\Exception $e) {
+            \Log::error('Error al generar reporte de pacientes por tipo de sangre y ciudad', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // En caso de error, redirigir con mensaje
             return redirect()->route('reportes')
                 ->with('error', 'Error al generar el reporte: ' . $e->getMessage());
         }

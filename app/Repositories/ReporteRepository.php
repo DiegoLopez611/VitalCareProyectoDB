@@ -94,5 +94,29 @@ class ReporteRepository implements ReporteRepositoryInterface
                 ->get();
     }
 
+    public function pacientesPorGrupoSanguineoCiudad()
+    {
+        return DB::table('pacientes as p')
+            ->leftJoin('ciudades as c', 'p.id_ciudad', '=', 'c.id')
+            ->leftJoin('grupos_sanguineos as gs', 'p.id_grupo_sanguineo', '=', 'gs.id')
+            ->select([
+                'p.id',
+                'p.cedula',
+                'p.primer_nombre',
+                'p.segundo_nombre',
+                'p.primer_apellido',
+                'p.segundo_apellido',
+                'p.email',
+                'p.fecha_nacimiento',
+                'p.created_at',
+                'c.nombre as ciudad',
+                'gs.nombre as tipo_sangre'
+            ])
+            ->orderBy('c.nombre')
+            ->orderBy('gs.nombre')
+            ->orderBy('p.primer_apellido')
+            ->get();
+    }
+
     
 }
