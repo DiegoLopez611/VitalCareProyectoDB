@@ -7,9 +7,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Repositories\Interfaces\ReporteRepositoryInterface;
 
 class ReporteController extends Controller
 {
+
+    protected $reporteRepository;
+
+    public function __construct(ReporteRepositoryInterface $reporteRepository)
+    {
+        $this->reporteRepository = $reporteRepository;
+    }
+
     public function index()
     {
          return view('reportes.index');
@@ -21,24 +30,7 @@ class ReporteController extends Controller
 
             \Log::info('Iniciando generación de reporte de pacientes');
             // Consultar todos los pacientes con JOIN a la tabla generos
-            $pacientes = DB::table('pacientes as p')
-                ->leftJoin('generos as g', 'p.id_genero', '=', 'g.id')
-                ->select([
-                    'p.id',
-                    'p.cedula',
-                    'p.primer_nombre',
-                    'p.segundo_nombre',
-                    'p.primer_apellido',
-                    'p.segundo_apellido',
-                    'p.email',
-                    'p.direccion',
-                    'p.fecha_nacimiento',
-                    'p.created_at',
-                    'p.updated_at',
-                    'g.nombre as genero' // Nombre del género
-                ])
-                ->orderBy('p.created_at', 'desc')
-                ->get();
+            $pacientes = $this->reporteRepository->pacientesPorGenero();
 
             \Log::info('Pacientes obtenidos: ' . $pacientes->count());
 
@@ -80,7 +72,7 @@ class ReporteController extends Controller
             ];
 
             // Generar PDF
-            $pdf = Pdf::loadView('reportes.pacientes-pdf', $data);
+            $pdf = Pdf::loadView('reportes.pacientes_pdf', $data);
             
             // Configurar el PDF
             $pdf->setPaper('A4', 'portrait');
@@ -115,29 +107,11 @@ class ReporteController extends Controller
     {
         try {
 
-            \Log::info('Iniciando generación de reporte de pacientes');
-            $medicamentos = DB::table('medicamentos')
-                ->select([
-                    'nombre',
-                    'nombre_laboratorio',
-                    'concentracion',
-                    'id',
-                    'created_at'
-                ])
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $medicamentos = $this->reporteRepository->obtenerMedicamentos();
 
-            \Log::info('Pacientes obtenidos: ' . $medicamentos->count());
-            // Calcular estadísticas básicas
             $totalMedicamentos = $medicamentos->count();
             $medicamentosHoy = $medicamentos->where('created_at', '>=', Carbon::today())->count();
             $medicamentosEsteMes = $medicamentos->where('created_at', '>=', Carbon::now()->startOfMonth())->count();
-
-            \Log::info('Estadísticas calculadas', [
-                'total' => $totalMedicamentos,
-                'hoy' => $medicamentosHoy,
-                'mes' => $medicamentosEsteMes
-            ]);
             
             // Preparar datos para la vista
             $data = [
@@ -150,7 +124,7 @@ class ReporteController extends Controller
             ];
 
             // Generar PDF
-            $pdf = Pdf::loadView('reportes.medicamentos-pdf', $data);
+            $pdf = Pdf::loadView('reportes.medicamentos_pdf', $data);
             
             // Configurar el PDF
             $pdf->setPaper('A4', 'portrait');
@@ -162,8 +136,6 @@ class ReporteController extends Controller
 
             // Generar nombre del archivo
             $nombreArchivo = 'reporte_medicamentos_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
-            \Log::info('PDF generado exitosamente: ' . $nombreArchivo);
-            // Descargar el PDF
             return $pdf->download($nombreArchivo);
 
         } catch (\Exception $e) {
@@ -185,19 +157,7 @@ class ReporteController extends Controller
     {
         try {
 
-            $sedes = DB::table('sedes as s')
-                ->leftJoin('ciudades as c', 's.id_ciudad','=','c.id')
-                ->select([
-                    's.nombre',
-                    's.direccion',
-                    's.telefono',
-                    's.id',
-                    's.created_at',
-                    'c.nombre as ciudad'
-                ])
-                ->orderBy('created_at', 'desc')
-                ->get();
-
+            $sedes = $this->reporteRepository->sedesPorCiudad();
 
             // Calcular estadísticas básicas
             $totalSedes = $sedes->count();
@@ -215,7 +175,7 @@ class ReporteController extends Controller
             ];
 
             // Generar PDF
-            $pdf = Pdf::loadView('reportes.sedes-pdf', $data);
+            $pdf = Pdf::loadView('reportes.sedes_pdf', $data);
             
             // Configurar el PDF
             $pdf->setPaper('A4', 'portrait');
@@ -227,8 +187,6 @@ class ReporteController extends Controller
 
             // Generar nombre del archivo
             $nombreArchivo = 'reporte_sedes_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
-            \Log::info('PDF generado exitosamente: ' . $nombreArchivo);
-            // Descargar el PDF
             return $pdf->download($nombreArchivo);
 
         } catch (\Exception $e) {
@@ -250,22 +208,9 @@ class ReporteController extends Controller
     {
         try {
 
-            \Log::info('Iniciando generación de reporte de medicos');
-            $medicos = DB::table('medicos as m')
-                ->join('usuarios as u', 'm.id','=','u.id')
-                ->join('especialidades as e', 'm.id_especialidad','=','e.id')
-                ->select([
-                    'u.nombre as nombre',
-                    'u.apellido as apellido',
-                    'm.cedula',
-                    'm.numero_licencia_medica',
-                    'e.nombre as especialidad',
-                    'm.created_at'
-                ])
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $medicos = $this->reporteRepository->medicosPorEspecialidad();
 
-             $medicos = $medicos->map(function ($medico) {
+            $medicos = $medicos->map(function ($medico) {
                 $medico->name = trim($medico->nombre . ' ' . 
                                     $medico->apellido . ' ' );
                 return $medico;
@@ -283,11 +228,11 @@ class ReporteController extends Controller
                 'medicosHoy' => $medicosHoy,
                 'medicosEsteMes' => $medicosEsteMes,
                 'fechaGeneracion' => Carbon::now()->format('d/m/Y H:i:s'),
-                'titulo' => 'Reporte de Medicamentos Registrados'
+                'titulo' => 'Reporte de Medicos Registrados'
             ];
 
             // Generar PDF
-            $pdf = Pdf::loadView('reportes.medicos-pdf', $data);
+            $pdf = Pdf::loadView('reportes.medicos_pdf', $data);
             
             // Configurar el PDF
             $pdf->setPaper('A4', 'portrait');
@@ -299,13 +244,11 @@ class ReporteController extends Controller
 
             // Generar nombre del archivo
             $nombreArchivo = 'reporte_medicos_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
-            \Log::info('PDF generado exitosamente: ' . $nombreArchivo);
-            // Descargar el PDF
             return $pdf->download($nombreArchivo);
 
         } catch (\Exception $e) {
 
-            \Log::error('Error al generar reporte de pacientes', [
+            \Log::error('Error al generar reporte de medicos', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
@@ -321,23 +264,9 @@ class ReporteController extends Controller
     public function reportePacientesCiudad()
     {
         try {
-            \Log::info('Iniciando generación de reporte de pacientes por ciudad');
             
             // Obtener pacientes con información de ciudad
-            $pacientes = DB::table('pacientes as p')
-                ->join('ciudades as c', 'p.id_ciudad', '=', 'c.id')
-                ->select([
-                    'p.primer_nombre',
-                    'p.segundo_nombre',
-                    'p.primer_apellido',
-                    'p.segundo_apellido',
-                    'p.cedula',
-                    'c.nombre as ciudad',
-                    'p.created_at'
-                ])
-                ->orderBy('c.nombre', 'asc')
-                ->orderBy('p.created_at', 'desc')
-                ->get();
+            $pacientes = $this->reporteRepository->pacientesPorCiudad();
 
             // Agregar nombre completo
             $pacientes = $pacientes->map(function ($paciente) {
@@ -377,7 +306,7 @@ class ReporteController extends Controller
             ];
 
             // Generar PDF
-            $pdf = Pdf::loadView('reportes.pacientes-ciudad-pdf', $data);
+            $pdf = Pdf::loadView('reportes.pacientes_ciudad-pdf', $data);
             
             // Configurar el PDF
             $pdf->setPaper('A4', 'portrait');

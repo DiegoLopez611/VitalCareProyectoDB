@@ -32,7 +32,7 @@
                                 [
                                     'titulo' => 'Reporte de Sedes',
                                     'nivel' => 'Intermedio',
-                                    'descripcion' => 'Generar un reporte de todos las sedes registradas en el sistema, incluyecdo información básica como nombre de la sede, telefono y direccion',
+                                    'descripcion' => 'Generar un reporte de todos las sedes registradas en el sistema, incluyecdo información básica como nombre de la sede, telefono, dirección y ciudad',
                                     'icono' => '🏥',
                                     'ruta' => 'reportes.sedes'
                                 ],

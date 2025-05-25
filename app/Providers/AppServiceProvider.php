@@ -12,6 +12,7 @@ use App\Repositories\MedicamentoRepository;
 use App\Repositories\MedicoRepository;
 use App\Repositories\UsuarioRepository;
 use App\Repositories\SedeRepository;
+use App\Repositories\ReporteRepository;
 use App\Repositories\Interfaces\PacienteRepositoryInterface;
 use App\Repositories\Interfaces\CiudadRepositoryInterface;
 use App\Repositories\Interfaces\GeneroRepositoryInterface;
@@ -20,6 +21,7 @@ use App\Repositories\Interfaces\MedicamentoRepositoryInterface;
 use App\Repositories\Interfaces\UsuarioRepositoryInterface;
 use App\Repositories\Interfaces\MedicoRepositoryInterface;
 use App\Repositories\Interfaces\SedeRepositoryInterface;
+use App\Repositories\Interfaces\ReporteRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UsuarioRepositoryInterface::class, UsuarioRepository::class);
         $this->app->bind(MedicoRepositoryInterface::class, MedicoRepository::class);
         $this->app->bind(SedeRepositoryInterface::class, SedeRepository::class);
+        $this->app->bind(ReporteRepositoryInterface::class, ReporteRepository::class);
+    
     
     }
 
