@@ -105,4 +105,14 @@ class MedicamentoController extends Controller
         $this->medicamentoRepository->eliminarMedicamento($id);
         return redirect()->route('medicamentos.index')->with('success', 'Medicamento eliminado correctamente.');
     }
+
+    public function buscar(Request $request)
+    {
+        
+        $buscar = $request->get('buscar', '');
+        
+        $medicamentos = $this->medicamentoRepository->buscarPacienteArgumento($buscar);
+
+        return view('medicamento.index', compact('medicamentos'));
+    }
 }

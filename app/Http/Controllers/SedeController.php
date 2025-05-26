@@ -113,4 +113,13 @@ class SedeController extends Controller
         $this->sedeRepository->eliminarSede($id);
         return redirect()->route('sedes.index')->with('success', 'Sede eliminada correctamente.');
     }
+
+    public function buscar(Request $request)
+    {
+        $buscar = $request->get('buscar', '');
+        
+        $sedes = $this->sedeRepository->buscarPacienteArgumento($buscar);
+
+        return view('sede.index', compact('sedes'));
+    }
 }

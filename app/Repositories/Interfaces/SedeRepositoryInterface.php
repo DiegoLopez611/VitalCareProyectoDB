@@ -9,4 +9,5 @@ interface SedeRepositoryInterface
     public function buscarSede($id);
     public function actualizarSede(array $data, $id);
     public function eliminarSede($id);
+    public function buscarPacienteArgumento($buscar);
 }

@@ -145,4 +145,13 @@ class MedicoController extends Controller
         return redirect()->route('medicos.index')->with('success', 'Medico eliminado correctamente.');
     
     }
+
+    public function buscar(Request $request)
+    {
+        $buscar = $request->get('buscar', '');
+        
+        $medicos = $this->medicoRepository->buscarPacienteArgumento($buscar);
+
+        return view('medico.index', compact('medicos'));
+    }
 }

@@ -152,4 +152,13 @@ class PacienteController extends Controller
         $this->pacienteRepository->eliminarPaciente($id);
         return redirect()->route('pacientes.index')->with('success', 'Paciente eliminado correctamente.');
     }
+
+    public function buscar(Request $request)
+    {
+        $buscar = $request->get('buscar', '');
+        
+        $pacientes = $this->pacienteRepository->buscarPacienteArgumento($buscar);
+
+        return view('paciente.index', compact('pacientes'));
+    }
 }

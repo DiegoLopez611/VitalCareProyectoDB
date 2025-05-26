@@ -9,4 +9,6 @@ interface MedicamentoRepositoryInterface
     public function buscarMedicamento($id);
     public function actualizarMedicamento(array $data, $id);
     public function eliminarMedicamento($id);
+    public function buscarPacienteArgumento($buscar);
+
 }

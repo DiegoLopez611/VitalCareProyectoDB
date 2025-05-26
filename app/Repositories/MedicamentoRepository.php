@@ -31,4 +31,17 @@ class MedicamentoRepository implements MedicamentoRepositoryInterface
     {
         DB::table('medicamentos')->where('id', $id)->update(['estado' => 'INACTIVO']);
     }
+
+    public function buscarPacienteArgumento($buscar)
+    {
+        return DB::table('medicamentos')
+            ->where('estado', 'ACTIVO')
+            ->where(function ($q) use ($buscar) {
+                $q->where('nombre', 'like', "%$buscar%")
+                  ->orWhere('nombre_laboratorio', 'like', "%$buscar%")
+                  ->orWhere('concentracion', 'like', "%$buscar%");
+            })
+            ->orderBy('created_at','asc')
+            ->paginate(10);
+    }
 }

@@ -15,12 +15,12 @@
                     <!-- Barra superior con búsqueda y botón crear -->
                     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
                         <!-- Campo de búsqueda -->
-                        <div class="flex w-full sm:w-2/3 gap-2">
-                            <input type="text" placeholder="Buscar medicamento..." class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm block w-full">
-                            <button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                        <form method="GET" action="{{ route('medicamentos.buscar') }}" class="flex w-full sm:w-2/3 gap-2">
+                            <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar medicamento..." class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm block w-full">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
                                 BUSCAR
                             </button>
-                        </div>
+                        </form>
                         
                         <!-- Botón crear paciente de tamaño normal -->
                         <a href="{{ route('medicamentos.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring focus:ring-indigo-300 disabled:opacity-25 transition">

@@ -31,4 +31,16 @@ class SedeRepository implements SedeRepositoryInterface
     {
         DB::table('sedes')->where('id', $id)->update(['estado' => 'INACTIVO']);
     }
+
+    public function buscarPacienteArgumento($buscar)
+    {
+        return DB::table('sedes')
+            ->where('estado', 'ACTIVO')
+            ->where(function ($q) use ($buscar) {
+                $q->where('nombre', 'like', "%$buscar%")
+                  ->orWhere('direccion', 'like', "%$buscar%");
+            })
+            ->orderBy('created_at', 'asc')
+            ->paginate(10);
+    }
 }

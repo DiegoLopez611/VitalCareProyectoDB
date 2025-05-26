@@ -9,4 +9,5 @@ interface PacienteRepositoryInterface
     public function buscarPaciente($id);
     public function eliminarPaciente($id);
     public function actualizarPaciente(array $data, $id);
+    public function buscarPacienteArgumento($buscar);
 }

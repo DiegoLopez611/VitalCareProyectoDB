@@ -17,22 +17,22 @@
                     </x-nav-link>
                 </div>
                  <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('pacientes.index') }}" :active="request()->routeIs('pacientes.index')">
+                    <x-nav-link href="{{ route('pacientes.index') }}" :active="request()->routeIs('pacientes.index','pacientes.buscar')">
                         {{ __('Pacientes') }}
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('medicos.index') }}" :active="request()->routeIs('medicos.index')">
+                    <x-nav-link href="{{ route('medicos.index') }}" :active="request()->routeIs('medicos.index','medicos.buscar')">
                         {{ __('Medicos') }}
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('medicamentos.index') }}" :active="request()->routeIs('medicamentos.index')">
+                    <x-nav-link href="{{ route('medicamentos.index') }}" :active="request()->routeIs('medicamentos.index','medicamentos.buscar')">
                         {{ __('Medicamentos') }}
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('sedes.index') }}" :active="request()->routeIs('sedes.index')">
+                    <x-nav-link href="{{ route('sedes.index') }}" :active="request()->routeIs('sedes.index','sedes.buscar')">
                         {{ __('Sedes') }}
                     </x-nav-link>
                 </div>

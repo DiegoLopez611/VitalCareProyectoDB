@@ -19,6 +19,11 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('/reportes/buscar', [PacienteController::class, 'buscar'])->name('pacientes.buscar');
+    Route::get('/medicos/buscar', [MedicoController::class, 'buscar'])->name('medicos.buscar');
+    Route::get('/medicamentos/buscar', [MedicamentoController::class, 'buscar'])->name('medicamentos.buscar');
+        Route::get('/sedes/buscar', [SedeController::class, 'buscar'])->name('sedes.buscar');
     
     Route::resource('pacientes', PacienteController::class);
     Route::resource('medicos', MedicoController::class);

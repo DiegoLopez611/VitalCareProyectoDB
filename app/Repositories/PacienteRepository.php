@@ -33,4 +33,20 @@ class PacienteRepository implements PacienteRepositoryInterface
             ->where('id', $id)
             ->update($data);
     }
+
+    public function buscarPacienteArgumento($buscar)
+    {
+        return DB::table('pacientes')
+            ->where('estado', 'ACTIVO')
+            ->where(function ($q) use ($buscar) {
+                $q->where('cedula', 'like', "%$buscar%")
+                  ->orWhere('primer_nombre', 'like', "%$buscar%")
+                  ->orWhere('segundo_nombre', 'like', "%$buscar%")
+                  ->orWhere('primer_apellido', 'like', "%$buscar%")
+                  ->orWhere('segundo_apellido', 'like', "%$buscar%")
+                  ->orWhere('email', 'like', "%$buscar%");
+            })
+            ->orderBy('primer_apellido')
+            ->paginate(10);
+    }
 }
