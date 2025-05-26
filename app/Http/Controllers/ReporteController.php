@@ -632,6 +632,56 @@ class ReporteController extends Controller
         }
     }
 
+    public function reporteUsuarios()
+    {
+        try {
+
+            $usuarios = $this->reporteRepository->obtenerUsuarios();
+
+            $totalUsuarios = $usuarios->count();
+            $usuariosHoy = $usuarios->where('created_at', '>=', Carbon::today())->count();
+            $usuariosEsteMes = $usuarios->where('created_at', '>=', Carbon::now()->startOfMonth())->count();
+            
+            // Preparar datos para la vista
+            $data = [
+                'usuarios' => $usuarios,
+                'totalUsuarios' => $totalUsuarios,
+                'usuariosHoy' => $usuariosHoy,
+                'usuariosEsteMes' => $usuariosEsteMes,
+                'fechaGeneracion' => Carbon::now()->format('d/m/Y H:i:s'),
+                'titulo' => 'Reporte de Usuarios Registrados'
+            ];
+
+            // Generar PDF
+            $pdf = Pdf::loadView('reportes.usuarios_pdf', $data);
+            
+            // Configurar el PDF
+            $pdf->setPaper('A4', 'portrait');
+            $pdf->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true
+            ]);
+
+            // Generar nombre del archivo
+            $nombreArchivo = 'reporte_usuarios_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
+            return $pdf->download($nombreArchivo);
+
+        } catch (\Exception $e) {
+
+            \Log::error('Error al generar reporte de pacientes', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // En caso de error, redirigir con mensaje
+            return redirect()->route('reportes')
+                ->with('error', 'Error al generar el reporte: ' . $e->getMessage());
+        }
+    }
+
     private function generateCityChartUrl($labels, $data)
     {
         $chartConfig = [

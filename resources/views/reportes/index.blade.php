@@ -37,6 +37,13 @@
                                     'ruta' => 'reportes.diagnosticos'
                                 ],
                                 [
+                                    'titulo' => 'Reporte de Usuarios',
+                                    'nivel' => 'Intermedio',
+                                    'descripcion' => 'Generar un reporte de todos los usuarios registrados en el sistema, incluyendo información básica.',
+                                    'icono' => '👤',
+                                    'ruta' => 'reportes.usuarios'
+                                ],
+                                [
                                     'titulo' => 'Reporte de Tratamientos',
                                     'nivel' => 'Intermedio',
                                     'descripcion' => 'Generar un reporte de todos los Tratamientos registrados en el sistema, incluyendo información básica como nombre del tratamiento, tipo del tratamiento y descripción.',
@@ -84,13 +91,6 @@
                                     'descripcion' => 'Generar un reporte de todas las atenciones programadas registradas en el sistema, incluyendo información general de la atención, médico y paciente asociado.',
                                     'icono' => '📢',
                                     'ruta' => 'reportes.atenciones_programadas'
-                                ],
-                                [
-                                    'titulo' => 'Reporte Ejecutivo',
-                                    'nivel' => 'Avanzado',
-                                    'descripcion' => 'Resumen ejecutivo con KPIs principales, métricas de negocio y dashboard para alta gerencia.',
-                                    'icono' => '📋',
-                                    'ruta' => 'reportes'
                                 ]
                             ];
                         @endphp

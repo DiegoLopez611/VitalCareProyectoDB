@@ -176,4 +176,21 @@ class ReporteRepository implements ReporteRepositoryInterface
             ->orderBy('u.apellido', 'asc')
             ->get();
     }
+
+    public function obtenerUsuarios()
+    {
+        return DB::table('usuarios as u')
+                ->join('estados_usuario as e', 'u.id_estado_usuario','=','e.id')
+                ->select([
+                    'u.cedula',
+                    'u.nombre',
+                    'u.apellido',
+                    'u.email',
+                    'u.fecha_nacimiento',
+                    'e.nombre as estado',
+                    'u.created_at'
+                ])
+                ->orderBy('u.created_at', 'asc')
+                ->get();
+    }
 }

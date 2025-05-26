@@ -13,4 +13,5 @@ interface ReporteRepositoryInterface
     public function obtenerDiagnosticos();
     public function obtenerTratamientos();
     public function atencionesProgramadasPorMedico();
+    public function obtenerUsuarios();
 }

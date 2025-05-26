@@ -60,7 +60,9 @@ class MedicoController extends Controller
             'direccion' => $request->input('direccion'),
             'fecha_nacimiento' => $request->input('fecha_nacimiento'),
             'password' => $request->input('cedula'),
-            'id_estado_usuario' => 1
+            'id_estado_usuario' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         $this->medicoRepository->guardarMedico([
