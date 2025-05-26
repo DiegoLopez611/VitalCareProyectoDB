@@ -19,6 +19,7 @@ class MedicoRepository implements MedicoRepositoryInterface
                 'u.fecha_nacimiento',
                 'u.email',
                 'm.numero_licencia_medica as licencia_medica',
+                'm.fecha_inicio_laboral as fecha_inicio',
                 'm.estado'
             ])
             ->paginate(10);

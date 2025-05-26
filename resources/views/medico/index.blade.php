@@ -106,6 +106,28 @@
                                                             </svg>
                                                         </button>
                                                     </form>
+                                                    <!-- Botón para ver detalles -->
+                                                    <button type="button" class="text-blue-600 hover:text-blue-900" onclick="openModal('modal-{{ $medico->id }}')">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
+
+                                                    <!-- Modal -->
+                                                    <div id="modal-{{ $medico->id }}" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden items-center justify-center z-50">
+                                                        <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                                                            <div class="flex justify-between items-center mb-4">
+                                                                <h2 class="text-xl font-semibold w-full text-center">Detalles del Medicamento</h2>
+                                                                <button onclick="closeModal('modal-{{ $medico->id }}')" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                                                            </div>
+                                                            <p><strong>Cédula:</strong> {{ $medico->cedula }}</p>
+                                                            <p><strong>Nombre:</strong> {{ $medico->nombre }}</p>
+                                                            <p><strong>Apellido:</strong> {{ $medico->apellido }}</p>
+                                                            <p><strong>Número Licencia Médica:</strong> {{ $medico->licencia_medica }}</p>
+                                                            <p><strong>Fecha Inicio Laboral:</strong> {{ $medico->fecha_inicio }}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>
