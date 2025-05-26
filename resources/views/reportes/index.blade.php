@@ -46,21 +46,21 @@
                                 [
                                     'titulo' => 'Reporte de Sedes',
                                     'nivel' => 'Intermedio',
-                                    'descripcion' => 'Generar un reporte de todos las sedes registradas en el sistema, incluyecdo información básica como nombre de la sede, telefono, dirección y ciudad',
+                                    'descripcion' => 'Generar un reporte de todas las sedes registradas en el sistema, incluyecdo información básica como nombre de la sede, telefono, dirección y ciudad',
                                     'icono' => '🏥',
                                     'ruta' => 'reportes.sedes'
                                 ],
                                 [
                                     'titulo' => 'Reporte de Pacientes',
                                     'nivel' => 'Intermedio',
-                                    'descripcion' => 'Genera un reporte completo de todos los pacientes registrados en el sistema, incluyendo información básica y discriminados por género.',
+                                    'descripcion' => 'Generar un reporte completo de todos los pacientes registrados en el sistema, incluyendo información básica (discriminados por género).',
                                     'icono' => '👥',
                                     'ruta' => 'reportes.pacientes'
                                 ],
                                 [
                                     'titulo' => 'Reporte de Pacientes por Ciudad',
                                     'nivel' => 'Intermedio',
-                                    'descripcion' => 'Genera un reporte completo de todos los pacientes registrados en el sistema, incluyendo información básica y discriminados por ciudad.',
+                                    'descripcion' => 'Genera un reporte completo de todos los pacientes registrados en el sistema, incluyendo información básica (discriminados por ciudad).',
                                     'icono' => '🏙️',
                                     'ruta' => 'reportes.pacientes_ciudad'
                                 ],
@@ -79,11 +79,11 @@
                                     'ruta' => 'reportes.medicos'
                                 ],
                                 [
-                                    'titulo' => 'Reporte de Marketing',
-                                    'nivel' => 'Intermedio',
-                                    'descripcion' => 'Análisis de campañas de marketing, ROI, conversiones y efectividad de estrategias publicitarias.',
+                                    'titulo' => 'Reporte de Atenciones Programadas',
+                                    'nivel' => 'Avanzado',
+                                    'descripcion' => 'Generar un reporte de todas las atenciones programadas registradas en el sistema, incluyendo información general de la atención, médico y paciente asociado.',
                                     'icono' => '📢',
-                                    'ruta' => 'reportes'
+                                    'ruta' => 'reportes.atenciones_programadas'
                                 ],
                                 [
                                     'titulo' => 'Reporte Ejecutivo',

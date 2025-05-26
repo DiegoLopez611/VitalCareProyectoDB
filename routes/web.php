@@ -34,4 +34,7 @@ Route::middleware([
     Route::get('/reportes/pacientes_grupo_sanguineo', [ReporteController::class, 'reportePacientesGrupoSanguineo'])->name('reportes.pacientes_grupo_sanguineo');
     Route::get('/reportes/diagnosticos', [ReporteController::class, 'reporteDiagnosticos'])->name('reportes.diagnosticos');
     Route::get('/reportes/tratamientos', [ReporteController::class, 'reporteTratamientos'])->name('reportes.tratamientos');
+    Route::get('/reportes/atenciones_programadas', [ReporteController::class, 'reporteAtencionesProgramadas'])->name('reportes.atenciones_programadas');
+
+
 });

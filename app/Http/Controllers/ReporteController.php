@@ -519,6 +519,119 @@ class ReporteController extends Controller
         }
     }
 
+    public function reporteAtencionesProgramadas()
+    {
+        try {
+            // Consultar atenciones programadas con sus relaciones
+            $atenciones = $this->reporteRepository->atencionesProgramadasPorMedico();
+            
+            // Transformar datos para agregar información completa
+            $atenciones = $atenciones->map(function ($atencion) {
+                // Nombre completo del médico
+                $atencion->medico_nombre_completo = trim(
+                    $atencion->medico_nombres . ' ' .
+                    $atencion->medico_apellidos
+                );
+                
+                // Nombre completo del paciente
+                $atencion->paciente_nombre_completo = trim(
+                    $atencion->paciente_primer_nombre . ' ' .
+                    ($atencion->paciente_segundo_nombre ?? '') . ' ' .
+                    $atencion->paciente_primer_apellido . ' ' .
+                    ($atencion->paciente_segundo_apellido ?? '')
+                );
+                
+                return $atencion;
+            });
+            
+            // Calcular estadísticas básicas
+            $totalAtenciones = $atenciones->count();
+            $atencionesHoy = $atenciones->where('fecha_atencion', Carbon::today()->format('Y-m-d'))->count();
+            $atencionesSemana = $atenciones->where('fecha_atencion', '>=', Carbon::now()->startOfWeek())
+                                        ->where('fecha_atencion', '<=', Carbon::now()->endOfWeek())->count();
+            $atencionesProximaSemana = $atenciones->where('fecha_atencion', '>=', Carbon::now()->addWeek()->startOfWeek())
+                                                ->where('fecha_atencion', '<=', Carbon::now()->addWeek()->endOfWeek())->count();
+            
+            // Agrupar por médico
+            $atencionesPorMedico = $atenciones->groupBy('medico_id')->map(function ($atencionesGrupo, $medicoId) {
+                $primerAtencion = $atencionesGrupo->first();
+                return [
+                    'medico_id' => $medicoId,
+                    'medico_nombre' => $primerAtencion->medico_nombre_completo,
+                    'medico_email' => $primerAtencion->medico_email ?? 'N/A',
+                    'especialidades' => $atencionesGrupo->pluck('especialidad_nombre')->unique()->implode(', '),
+                    'total_atenciones' => $atencionesGrupo->count(),
+                    'atenciones_hoy' => $atencionesGrupo->where('fecha_atencion', Carbon::today()->format('Y-m-d'))->count(),
+                    'atenciones_semana' => $atencionesGrupo->where('fecha_atencion', '>=', Carbon::now()->startOfWeek()->format('Y-m-d'))
+                                                        ->where('fecha_atencion', '<=', Carbon::now()->endOfWeek()->format('Y-m-d'))->count(),
+                    'atenciones' => $atencionesGrupo->sortBy('fecha_atencion')
+                ];
+            });
+            
+            // Estadísticas por especialidad (desde la atención)
+            $estadisticasPorEspecialidad = $atenciones->groupBy('especialidad_nombre')->map(function ($group) {
+                return $group->count();
+            });
+            
+            // Estadísticas por fecha (próximos 7 días)
+            $estadisticasPorFecha = $atenciones->groupBy('fecha_atencion')->map(function ($group) {
+                return $group->count();
+            })->sortKeys();
+            
+            // Obtener médicos únicos
+            $medicos = $atenciones->groupBy('medico_id')->map(function ($group) {
+                $primerAtencion = $group->first();
+                return [
+                    'id' => $primerAtencion->medico_id,
+                    'nombre' => $primerAtencion->medico_nombre_completo,
+                    'especialidades' => $group->pluck('especialidad_nombre')->unique()->implode(', ')
+                ];
+            })->values();
+            
+            // Obtener especialidades únicas (desde las atenciones)
+            $especialidades = $atenciones->pluck('especialidad_nombre')->unique()->filter()->sort()->values();
+            
+            $data = [
+                'atenciones' => $atenciones,
+                'atencionesPorMedico' => $atencionesPorMedico,
+                'totalAtenciones' => $totalAtenciones,
+                'atencionesHoy' => $atencionesHoy,
+                'atencionesSemana' => $atencionesSemana,
+                'atencionesProximaSemana' => $atencionesProximaSemana,
+                'estadisticasPorEspecialidad' => $estadisticasPorEspecialidad,
+                'estadisticasPorFecha' => $estadisticasPorFecha,
+                'medicos' => $medicos,
+                'especialidades' => $especialidades,
+                'fechaGeneracion' => Carbon::now()->format('d/m/Y H:i:s'),
+                'titulo' => 'Reporte de Atenciones Programadas por Médico'
+            ];
+
+            $pdf = Pdf::loadView('reportes.atenciones_programadas_medicos_pdf', $data);
+            $pdf->setPaper('A4', 'landscape'); // Horizontal por más columnas
+            $pdf->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true
+            ]);
+            
+            // Generar nombre del archivo
+            $nombreArchivo = 'reporte_atenciones_programadas_medicos_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
+            return $pdf->download($nombreArchivo);
+            
+        } catch (\Exception $e) {
+            \Log::error('Error al generar reporte de atenciones programadas por médico', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // En caso de error, redirigir con mensaje
+            return redirect()->route('reportes')
+                ->with('error', 'Error al generar el reporte: ' . $e->getMessage());
+        }
+    }
+
     private function generateCityChartUrl($labels, $data)
     {
         $chartConfig = [

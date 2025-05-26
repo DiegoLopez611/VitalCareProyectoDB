@@ -12,4 +12,5 @@ interface ReporteRepositoryInterface
     public function pacientesPorGrupoSanguineoCiudad();
     public function obtenerDiagnosticos();
     public function obtenerTratamientos();
+    public function atencionesProgramadasPorMedico();
 }

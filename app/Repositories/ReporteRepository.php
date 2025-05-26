@@ -144,4 +144,36 @@ class ReporteRepository implements ReporteRepositoryInterface
             ->orderBy('t.created_at', 'asc')
             ->get();
     }
+
+    public function atencionesProgramadasPorMedico()
+    {
+        return DB::table('atenciones as a')
+            ->join('medicos as m', 'a.id_medico', '=', 'm.id')
+            ->join('pacientes as p', 'a.id_paciente', '=', 'p.id')
+            ->join('estados_atencion as ea', 'a.id_estado_atencion', '=', 'ea.id')
+            ->join('especialidades as esp', 'a.id_especialidad', '=', 'esp.id')
+            ->join('usuarios as u', 'm.cedula', '=', 'u.cedula')
+            ->select([
+                
+                //datos de la atencion
+                'a.id',
+                'u.nombre as medico_nombres',
+                'u.apellido as medico_apellidos',
+
+                'p.primer_nombre as paciente_primer_nombre',
+                'p.segundo_nombre as paciente_segundo_nombre',
+                'p.primer_apellido as paciente_primer_apellido',
+                'p.segundo_apellido as paciente_segundo_apellido',
+
+                'a.id_medico as medico_id',
+                'u.email as medico_email',
+                'esp.nombre as especialidad_nombre',
+                'a.fecha as fecha_atencion'
+            ])
+            ->where('ea.nombre', '=', 'Programada') // Solo atenciones programadas
+            ->orderBy('a.fecha', 'asc')
+            ->orderBy('a.hora', 'asc')
+            ->orderBy('u.apellido', 'asc')
+            ->get();
+    }
 }
